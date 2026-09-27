@@ -1,0 +1,39 @@
+{
+  "info": {
+    "name": "ARP 01 - Gestão de frotas logísticas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "base_url", "value": "http://localhost:8100"},
+    {"key": "api_key", "value": "COLE_SUA_CHAVE"},
+    {"key": "request_id", "value": "COLE_O_UUID_RETORNADO"}
+  ],
+  "item": [
+    {
+      "name": "Criar solicitação de transporte",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "X-API-Key", "value": "{{api_key}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"origin\":\"Anapolis, GO\",\"destination\":\"Goiania, GO\",\"cargo_kg\":480}"},
+        "url": "{{base_url}}/requests"
+      }
+    },
+    {
+      "name": "Consultar status",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "X-API-Key", "value": "{{api_key}}"}],
+        "url": "{{base_url}}/requests/{{request_id}}"
+      }
+    },
+    {
+      "name": "Validação: peso inválido",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "X-API-Key", "value": "{{api_key}}"}, {"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"origin\":\"Anapolis\",\"destination\":\"Goiania\",\"cargo_kg\":-1}"},
+        "url": "{{base_url}}/requests"
+      }
+    }
+  ]
+}

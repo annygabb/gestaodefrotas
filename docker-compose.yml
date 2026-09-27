@@ -1,0 +1,67 @@
+name: gestao-frotas-arp01
+x-app: &app
+  build: .
+  restart: unless-stopped
+  networks: [internal]
+services:
+  broker:
+    <<: *app
+    environment: [SERVICE=broker]
+    volumes: [broker-data:/data]
+  requests:
+    <<: *app
+    environment:
+      SERVICE: requests
+      BROKER_URL: http://broker:8101
+    volumes: [requests-data:/data]
+    depends_on: [broker]
+  fleet:
+    <<: *app
+    environment: [SERVICE=fleet]
+    volumes: [fleet-data:/data]
+  notifications:
+    <<: *app
+    environment:
+      SERVICE: notifications
+      BROKER_URL: http://broker:8101
+    volumes: [notifications-data:/data]
+    depends_on: [broker]
+  dispatch-a:
+    <<: *app
+    environment:
+      SERVICE: dispatch
+      INSTANCE: dispatch-a
+      PORT: "8104"
+      P2P_PORT: "8301"
+      PEER_HOST: dispatch-b
+      PEER_PORT: "8302"
+      FLEET_HOST: fleet
+      BROKER_URL: http://broker:8101
+    depends_on: [broker, fleet]
+  dispatch-b:
+    <<: *app
+    environment:
+      SERVICE: dispatch
+      INSTANCE: dispatch-b
+      PORT: "8104"
+      P2P_PORT: "8302"
+      PEER_HOST: dispatch-a
+      PEER_PORT: "8301"
+      FLEET_HOST: fleet
+      BROKER_URL: http://broker:8101
+    depends_on: [broker, fleet]
+  gateway:
+    <<: *app
+    environment:
+      SERVICE: gateway
+      REQUESTS_URL: http://requests:8102
+      API_KEY: ${API_KEY:?Set API_KEY in .env}
+    ports: ["127.0.0.1:8100:8100"]
+    depends_on: [requests]
+networks:
+  internal:
+volumes:
+  broker-data:
+  requests-data:
+  fleet-data:
+  notifications-data:

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d2b42">
+  <title>Gestão de frotas | ARP 01</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Gestão de frotas, início"><span class="brand-mark">GF<span></span></span><span>GESTÃO DE FROTAS <small>ARP 01 · SISTEMAS DISTRIBUÍDOS</small></span></a>
+      <div class="top-right"><span class="live-dot" aria-hidden="true"></span><span>AMBIENTE LOCAL</span></div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="title">
+        <div class="intro-copy"><p class="eyebrow">PAINEL DE OPERAÇÕES / 001</p><h1 id="title">Uma carga.<br><em>O veículo certo.</em></h1><p class="lead">Registre uma solicitação de transporte. A frota escolhe um veículo disponível e você acompanha o resultado aqui.</p></div>
+        <div class="route-graphic" aria-hidden="true"><span class="route-tag start">ORIGEM</span><span class="route-line"></span><span class="route-point"></span><span class="route-tag end">DESTINO</span></div>
+      </section>
+
+      <div class="columns">
+        <section class="panel form-panel" aria-labelledby="create-title">
+          <div class="panel-heading"><div><p class="eyebrow">NOVA OPERAÇÃO</p><h2 id="create-title">Solicitar transporte</h2></div><span class="panel-index">01 / CRIAR</span></div>
+          <form id="request-form">
+            <div class="field"><label for="origin">Origem</label><input id="origin" name="origin" autocomplete="street-address" placeholder="Ex.: Anápolis, GO" minlength="2" maxlength="120" required></div>
+            <div class="field"><label for="destination">Destino</label><input id="destination" name="destination" placeholder="Ex.: Goiânia, GO" minlength="2" maxlength="120" required></div>
+            <div class="field"><label for="cargo">Peso da carga <span>(kg)</span></label><input id="cargo" name="cargo" type="number" inputmode="decimal" min="0.01" max="10000" step="0.01" placeholder="Ex.: 480" required><small>O sistema procura o menor veículo com capacidade suficiente.</small></div>
+            <div id="key-field" class="field hidden"><label for="api-key">Chave de API</label><input id="api-key" name="api-key" type="password" autocomplete="off" placeholder="Valor definido no arquivo .env"><small>Necessária apenas ao executar com Docker Compose.</small></div>
+            <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+            <button class="primary" id="create-button" type="submit"><span>Criar solicitação</span><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+          </form>
+        </section>
+
+        <section class="panel activity-panel" aria-labelledby="activity-title">
+          <div class="panel-heading"><div><p class="eyebrow">ACOMPANHAMENTO</p><h2 id="activity-title">Solicitações</h2></div><span class="panel-index">02 / STATUS</span></div>
+          <div id="request-list" class="request-list"><div class="empty"><span class="empty-track" aria-hidden="true"></span><h3>Nenhuma solicitação ainda</h3><p>Preencha os dados ao lado para começar. O status será atualizado automaticamente.</p></div></div>
+          <p class="activity-note">CREATED <span>→</span> ASSIGNED OU REJECTED <span class="refresh">ATUALIZAÇÃO AUTOMÁTICA</span></p>
+        </section>
+      </div>
+    </main>
+    <footer><span>ARP 01 · GESTÃO DE FROTAS LOGÍSTICAS</span><span>ANNY GABRIELLY GONÇALVES DE OLIVEIRA · 2310019</span></footer>
+  </div>
+</body>
+</html>
