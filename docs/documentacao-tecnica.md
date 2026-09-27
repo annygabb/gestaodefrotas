@@ -77,7 +77,7 @@ Tópicos: `request.created` (pedido inicial), `assignment.decided` (resultado da
 | RNF04 | Consistência eventual: `CREATED` pode aparecer durante segundos até o consumo; não há prazo fixo em falhas. |
 | RNF05 | UUID de correlação acompanha eventos, comandos TCP e logs. |
 | RNF06 | `npm run dev` inicia os serviços com Node.js e Python 3.12; alternativamente `docker-compose.yml`; teste local usa Python 3.12 padrão. |
-| RNF07 | Chave aleatória gerada no `.env` local na primeira execução de `npm run dev`; `.env` ignorado pelo Git e `.env.example` ilustrativo. |
+| RNF07 | Chave aleatória gerada no `.env` local por `npm run dev` ou `npm run docker:dev`; `.env` ignorado pelo Git e nenhuma chave real versionada. |
 | RNF08 | `202` é retornado após transação local, sem aguardar alocação nem notificação. |
 | RNF09 | Cada serviço executa em contêiner isolado e pode reiniciar sem recompilar os outros. |
 
@@ -87,7 +87,7 @@ Tópicos: `request.created` (pedido inicial), `assignment.decided` (resultado da
 
 **Concorrência:** SQLite serializa a alocação com `BEGIN IMMEDIATE` e índice único por solicitação. **Sem relógio global:** horários UTC servem a logs, enquanto ordem e idempotência dependem de estado transacional, IDs e fila. **Falhas independentes:** uma falha em Notificações não impede alocação; uma falha em Frota provoca reentrega e possível DLQ. **Escalabilidade:** o consumo competitivo permite duas instâncias de Despacho, mas SQLite/broker de processo único limitam escala. **Heterogeneidade/interoperabilidade:** HTTP/JSON, TCP/JSON Lines e contêineres se comunicam por protocolos abertos. **Transparência:** gateway esconde os serviços do cliente, mantendo status eventual explícito.
 
-**Segurança:** no Compose somente gateway é publicado no host, ligado a loopback. Em `npm run dev`, todos os serviços escutam apenas em `127.0.0.1`; o launcher gera o `.env` com chave aleatória se ela ainda não existir e o gateway disponibiliza `/dev-config` com essa chave para a tela. Essa conveniência é restrita à execução local. A chave de API não é identidade de usuário; ambiente de produção requer TLS, autenticação forte, autorização, proteção da rede interna, rate limiting e rotação de credenciais. Este protótipo não envia SMS/e-mail real; “notificação” significa registro rastreável de evento no banco de Notificações.
+**Segurança:** no Compose somente gateway é publicado no host, ligado a loopback. Em `npm run dev`, todos os serviços escutam apenas em `127.0.0.1`. Ambos os comandos locais geram o `.env` com chave aleatória se ela ainda não existir e o gateway disponibiliza `/dev-config` com essa chave para a tela. Essa conveniência é restrita à execução local. A chave de API não é identidade de usuário; ambiente de produção requer TLS, autenticação forte, autorização, proteção da rede interna, rate limiting e rotação de credenciais. Este protótipo não envia SMS/e-mail real; “notificação” significa registro rastreável de evento no banco de Notificações.
 
 ## 6. Verificação e referências
 

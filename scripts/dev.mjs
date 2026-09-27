@@ -1,24 +1,14 @@
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { mkdirSync } from 'node:fs';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { randomBytes } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { ensureApiKey } from './config.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const data = join(root, '.local-data');
 mkdirSync(data, { recursive: true });
-const envFile = join(root, '.env');
-if (!existsSync(envFile)) {
-  writeFileSync(envFile, `API_KEY=${randomBytes(24).toString('hex')}\n`, { mode: 0o600 });
-}
-const match = readFileSync(envFile, 'utf8').match(/^API_KEY\s*=\s*([^\r\n#]+)\s*$/m);
-const apiKey = match?.[1]?.trim().replace(/^['"]|['"]$/g, '');
-if (!apiKey) {
-  console.error('A chave API_KEY do arquivo .env está vazia. Corrija o arquivo ou remova-o para gerar outra chave.');
-  process.exit(1);
-}
+const apiKey = ensureApiKey(root);
 const python = process.env.PYTHON || (process.platform === 'win32' ? 'py' : 'python3');
 const prefix = process.platform === 'win32' && !process.env.PYTHON ? ['-3'] : [];
 const children = [];

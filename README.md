@@ -14,18 +14,21 @@ npm run dev
 
 Abra **http://localhost:8100**. A tela permite criar solicitações e acompanhar o resultado automaticamente. Não é necessário `npm install`, Docker, criar `.env` nem digitar uma chave: o comando gera o `.env` com uma chave aleatória na primeira execução, inicia os serviços e mantém os dados em `.local-data/`. Para encerrar, pressione `Ctrl+C`. No Windows, o comando usa `py -3` (Python Launcher); se necessário, defina a variável `PYTHON` apontando para sua instalação do Python.
 
-> A API continua autenticada com `X-API-Key` (RF11). A tela obtém automaticamente a chave local de `/dev-config`, rota habilitada apenas em `npm run dev`. O `.env` é ignorado pelo Git; todos os serviços se vinculam a `127.0.0.1` nesse modo. Não exponha o modo de desenvolvimento na internet.
+> A API continua autenticada com `X-API-Key` (RF11). A tela obtém automaticamente a chave local de `/dev-config`, rota habilitada apenas nos modos de teste locais. O `.env` é ignorado pelo Git; todos os serviços se vinculam a `127.0.0.1` em `npm run dev`. Não exponha o modo de desenvolvimento na internet.
 
 ## Execução alternativa com Docker Compose
 
-Pré-requisitos: Docker Engine com Compose. Se você já executou `npm run dev`, o `.env` estará pronto; encerre o modo local antes de iniciar o Compose. Na raiz deste projeto:
+Pré-requisitos: Docker Engine com Compose e Node.js. Encerre `npm run dev` se estiver aberto. Na raiz deste projeto:
 
 ```bash
-docker compose up --build -d
-docker compose ps
+npm run docker:dev
 ```
 
-A porta `8100` fica vinculada apenas a `127.0.0.1`. Os demais serviços, inclusive o broker experimental, só são acessíveis na rede interna do Compose. Aguarde alguns segundos até os serviços terminarem de iniciar. Nesta modalidade, a tela pedirá a chave gerada no `.env` ao criar solicitações. Se preferir usar Compose diretamente sem executar `npm run dev` antes, copie `.env.example` para `.env` e defina `API_KEY` manualmente.
+Esse comando gera o `.env` se necessário, inicia o Compose e deixa a tela disponível em **http://localhost:8100**, sem solicitar chave. A porta `8100` fica vinculada apenas a `127.0.0.1`. Os demais serviços, inclusive o broker experimental, só são acessíveis na rede interna do Compose. Aguarde alguns segundos até os serviços terminarem de iniciar. Para encerrar os contêineres, execute `docker compose down`.
+
+### Uso opcional da API com curl ou Postman
+
+A chave de teste é um valor aleatório escrito em `.env` no seu computador. A tela obtém esse valor sozinha. Se optar por fazer requisições manuais, consulte a linha `API_KEY` no seu `.env` e use seu valor no cabeçalho `X-API-Key`:
 
 ```bash
 curl -i http://localhost:8100/health
@@ -60,7 +63,7 @@ O script `python3 tests/smoke.py` sobe subprocessos locais isolados sem dependê
 
 Payload do POST: `{"origin":"Anapolis, GO","destination":"Goiania, GO","cargo_kg":480}`. `origin` e `destination` têm de 2 a 120 caracteres e devem ser distintos; `cargo_kg` é maior que 0 e até 10000. É possível enviar um UUID em `X-Correlation-ID`; na ausência dele, o serviço gera um. Rotas internas de diagnóstico (`/vehicles`, `/notifications/{uuid}`, `/peer-state`, `/dlq`) não são expostas pelo gateway e servem somente à demonstração na rede local.
 
-Ao usar `npm run dev`, `GET /dev-config` fornece a chave local à interface. Essa rota não existe no Docker Compose.
+Nos dois modos locais, `GET /dev-config` fornece a chave à interface. O gateway escuta somente em loopback no computador do usuário; não use essa rota em uma implantação pública.
 
 ## Limites da implementação didática
 

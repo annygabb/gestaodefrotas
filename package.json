@@ -5,6 +5,7 @@
   "description": "Protótipo de sistemas distribuídos para gestão de frotas logísticas",
   "scripts": {
     "dev": "node scripts/dev.mjs",
+    "docker:dev": "node scripts/docker.mjs",
     "test": "python3 tests/smoke.py"
   }
 }

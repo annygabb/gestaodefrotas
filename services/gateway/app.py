@@ -5,7 +5,7 @@ from pathlib import Path
 from common.http import Handler, read_json, request, respond, serve, log
 
 REQUESTS = os.getenv("REQUESTS_URL", "http://localhost:8102")
-API_KEY = os.getenv("API_KEY", "development-key")
+API_KEY = os.environ["API_KEY"]
 DEV_MODE = os.getenv("DEV_MODE") == "1"
 WEB_ROOT = Path(__file__).resolve().parents[2] / "web"
 

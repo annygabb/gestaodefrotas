@@ -2,7 +2,7 @@
 
 O projeto inclui código e um teste automatizado, mas **não contém prints fabricados**. Execute os passos no próprio computador, capture as saídas e anexe os arquivos à submissão se o professor pedir imagens ou vídeo.
 
-1. Execute `npm run dev`, abra `http://localhost:8100` e capture a tela e o terminal com os serviços em execução. Alternativamente execute `docker compose up --build -d` e capture `docker compose ps` com gateway, broker, Solicitações, Frota, Notificações e duas instâncias de Despacho.
+1. Execute `npm run dev`, abra `http://localhost:8100` e capture a tela e o terminal com os serviços em execução. Alternativamente execute `npm run docker:dev` e capture `docker compose ps` com gateway, broker, Solicitações, Frota, Notificações e duas instâncias de Despacho.
 2. Faça `POST /requests` conforme README e capture o HTTP `202` com `request_id` e `correlation_id`.
 3. Consulte `GET /requests/{uuid}` até aparecer `ASSIGNED` ou `REJECTED`; registre a mudança de status. O tempo de `CREATED` pode ser curto demais para capturar por polling manual.
 4. Capture `docker compose logs --tail=80 requests broker dispatch-a dispatch-b fleet notifications` e mostre o mesmo `correlation_id` em múltiplos serviços. Use as consultas internas do README para mostrar `peer_seen: true` e o mesmo ID no cache das duas instâncias.
